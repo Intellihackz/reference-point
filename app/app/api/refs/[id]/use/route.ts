@@ -23,7 +23,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
   if (!content) return err(500, "content missing");
 
   const settled = await verifyAndSettle(header, reqs);
-  if (!settled.ok) return paymentRequired(reqs, settled.error);
+  if (!settled.ok) return paymentRequired(reqs, settled.error, settled.detail);
 
   const receipt: Receipt = {
     id: newId(),

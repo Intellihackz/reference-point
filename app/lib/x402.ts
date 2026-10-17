@@ -29,8 +29,8 @@ export function requirements(input: { amount: string; payTo: string; resource: s
   };
 }
 
-export function paymentRequired(reqs: Requirements, error: string): Response {
-  return Response.json({ x402Version: 1, error, accepts: [reqs] }, { status: 402 });
+export function paymentRequired(reqs: Requirements, error: string, detail?: unknown): Response {
+  return Response.json({ x402Version: 1, error, ...(detail === undefined ? {} : { detail }), accepts: [reqs] }, { status: 402 });
 }
 
 async function facilitator(path: "verify" | "settle", body: unknown) {
@@ -49,7 +49,7 @@ async function facilitator(path: "verify" | "settle", body: unknown) {
   }
 }
 
-export type Settled = { ok: true; transaction: string; payer: string } | { ok: false; error: string };
+export type Settled = { ok: true; transaction: string; payer: string } | { ok: false; error: string; detail?: unknown };
 
 export async function verifyAndSettle(header: string, reqs: Requirements): Promise<Settled> {
   let paymentPayload: unknown;
@@ -58,10 +58,17 @@ export async function verifyAndSettle(header: string, reqs: Requirements): Promi
   } catch {
     return { ok: false, error: "invalid X-PAYMENT header" };
   }
-  const body = { x402Version: 1, paymentPayload, paymentRequirements: reqs };
+  const version = typeof (paymentPayload as { x402Version?: unknown })?.x402Version === "number" ? (paymentPayload as { x402Version: number }).x402Version : 1;
+  const body = { x402Version: version, paymentPayload, paymentRequirements: reqs };
   const v = await facilitator("verify", body);
-  if (v.isValid !== true) return { ok: false, error: String(v.invalidReason ?? v.error ?? "payment invalid") };
+  if (v.isValid !== true) {
+    console.error("x402 verify failed", JSON.stringify(v));
+    return { ok: false, error: String(v.invalidReason ?? v.error ?? "payment invalid"), detail: { stage: "verify", facilitator: v } };
+  }
   const s = await facilitator("settle", body);
-  if (s.success !== true) return { ok: false, error: String(s.errorReason ?? s.error ?? "settlement failed") };
+  if (s.success !== true) {
+    console.error("x402 settle failed", JSON.stringify(s));
+    return { ok: false, error: String(s.errorReason ?? s.error ?? "settlement failed"), detail: { stage: "settle", facilitator: s } };
+  }
   return { ok: true, transaction: String(s.transaction ?? ""), payer: String(s.payer ?? v.payer ?? "") };
 }
