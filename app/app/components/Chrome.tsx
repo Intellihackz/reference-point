@@ -1,9 +1,8 @@
+import { Brand } from "./Brand";
 export function Nav({ onDark = false }: { onDark?: boolean }) {
   return (
     <header className={`nav${onDark ? " nav-dark" : ""}`}>
-      <a className="brand" href="/">
-        Reference Point
-      </a>
+      <Brand />
       <nav className="nav-links" aria-label="Main">
         <a className="nav-link" href="/agents">
           For agents

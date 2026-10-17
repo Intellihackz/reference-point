@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Brand } from "../components/Brand";
 
 async function resize(file: File, max: number, quality: number): Promise<string> {
   const bmp = await createImageBitmap(file);
@@ -104,9 +105,7 @@ export default function PublishApp() {
   return (
     <div className="pub">
       <aside className="pub-side">
-        <a className="brand" href="/">
-          Reference Point
-        </a>
+        <Brand />
 
         <div className="pub-intro">
           <h1>Publish your work</h1>

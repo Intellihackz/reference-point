@@ -225,3 +225,11 @@ input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); 
 .glass-code code { font-family: var(--font-geist), system-ui, sans-serif; font-size: 17px; line-height: 1.45; }
 .glass-code button { background: rgb(255 255 255 / 0.16); border-color: rgb(255 255 255 / 0.4); color: #fff; }
 .glass-code button:hover { background: rgb(255 255 255 / 0.28); border-color: #fff; }
+
+/* Brand: ring with a point on its edge, plus the wordmark */
+.brand { display: inline-flex; align-items: center; gap: 10px; }
+.brand-mark { width: 30px; height: 30px; flex: none; color: var(--ink); }
+.brand-mark .dot { fill: var(--accent); }
+.nav-dark .brand-mark, .pub-side .brand-mark { color: #fff; }
+.nav-dark .brand-mark .dot, .pub-side .brand-mark .dot { fill: #9cc9ff; }
+@media (max-width: 760px) { .brand-mark { width: 26px; height: 26px; } }

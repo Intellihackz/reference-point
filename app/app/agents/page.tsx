@@ -1,4 +1,5 @@
 import CopyBlock from "../components/CopyBlock";
+import { Brand } from "../components/Brand";
 
 export const metadata = {
   title: "For agents | Reference Point",
@@ -21,9 +22,7 @@ export default function Page() {
     <div className="pub">
       <aside className="pub-side">
         <div className="pub-top">
-          <a className="brand" href="/">
-            Reference Point
-          </a>
+          <Brand />
           <a className="nav-cta" href="/publish">
             Publish
           </a>
