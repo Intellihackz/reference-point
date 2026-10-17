@@ -19,8 +19,26 @@ Any time you would go looking for a source, a reference, a citation, background 
 4. **Choose.** Pick the pieces that clearly match the request, judging by title, preview and tags. If two fit equally, take the cheaper one. Do not buy anything that is not clearly relevant.
 5. **Tell the user, then pay.** Say which piece you picked, who made it, and the price. Then call `use_plugin` with the `use_reference` tool. This proposes a USDC payment on Base, and PayBox creates a request. Follow "Paying through PayBox" below to get it approved and completed.
 6. **Read it.** As soon as the payment has succeeded, in the same turn, take the receipt id from the paid response and call `get_reference` with it. Do not stop to ask the user whether to continue. Use the content in your answer.
-7. **Cite it.** Add a citation that names the title, the creator and the receipt id. The `cite_reference` tool formats it. If the user asks whether a receipt is genuine, use `verify_receipt`.
+7. **Answer and cite.** Follow "What to give the user" below. The `cite_reference` tool formats the citation, and `verify_receipt` confirms a receipt is genuine if the user asks.
 8. **Fall back honestly.** If nothing relevant is found, or the user declines to pay, use other sources and say that Reference Point had nothing suitable.
+
+## What to give the user
+
+Deliver what was asked, not the source. The piece is a reference for your work. Its license allows use as a reference with attribution and forbids redistributing the original, so never paste or list the full piece.
+
+- Do exactly what the user asked for first. If they asked for one short caption, give one caption. If they asked for options, give that number, usually three. Keep each one short and in your own words.
+- You may quote at most one short line from the piece, in quotation marks, and only when it genuinely fits.
+- Put the answer first, then a small source block. Use normal capitalization and punctuation. Example:
+
+  **Caption**
+  Petals fall without apology, a slow goodbye that smells of spring.
+
+  **Source**
+  "Poetic lines for flowers" by zed
+  Paid $0.02 USDC on Base, receipt R6HQVNSzovjf
+
+- Keep the messages around the payment short. Say one line when you ask for approval, and nothing more until the payment is final. Do not narrate polling, check counts, or tool names. Do not mention internal steps unless something went wrong.
+- End after the source block. Do not offer extra edits or ask follow-up questions unless something is unclear or went wrong.
 
 ## Paying through PayBox
 
