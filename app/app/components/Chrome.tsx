@@ -2,15 +2,11 @@ export function Nav({ onDark = false }: { onDark?: boolean }) {
   return (
     <header className={`nav${onDark ? " nav-dark" : ""}`}>
       <a className="brand" href="/">
-        <span className="brand-mark" aria-hidden="true" />
         Reference Point
       </a>
-      <nav className="nav-links" aria-label="Main">
-        <a className="btn btn-sm" href="/publish">
-          <span className="long-label">Publish your work</span>
-          <span className="short-label">Publish</span>
-        </a>
-      </nav>
+      <a className="nav-cta" href="/publish">
+        Publish
+      </a>
     </header>
   );
 }
@@ -19,8 +15,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <span>Reference Point</span>
-      <span className="footer-note">Built for the MoonPay and PayBox hackathon. Payments are USDC on Base.</span>
-      <a href="/publish">Publish</a>
+      <span>Payments are USDC on Base, approved in PayBox.</span>
     </footer>
   );
 }

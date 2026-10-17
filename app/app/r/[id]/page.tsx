@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { getRef } from "@/lib/refs";
 import { Footer, Nav } from "../../components/Chrome";
-import { tintFor } from "../../components/Tile";
 
 export const dynamic = "force-dynamic";
 
@@ -20,16 +19,14 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       <Nav />
       <main className="wrap">
         <article className="card">
-          <div className={`ref-head ${tintFor(r.id)}`}>
-            {r.hasThumb && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img className="preview" src={`/api/refs/${r.id}/thumb`} alt="" />
-            )}
-            <h1>{r.title}</h1>
-            <p className="meta">
-              By {r.creator}. {r.kind === "text" ? "Article" : "Image"}, used {r.uses} {r.uses === 1 ? "time" : "times"}.
-            </p>
-          </div>
+          {r.hasThumb && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="preview" src={`/api/refs/${r.id}/thumb`} alt="" />
+          )}
+          <h1 className="ref-title">{r.title}</h1>
+          <p className="meta">
+            By {r.creator}. {r.kind === "text" ? "Article" : "Image"}, used {r.uses} {r.uses === 1 ? "time" : "times"}.
+          </p>
           <p>{r.preview}</p>
           <p className="pay">${r.priceUsdc} USDC per use</p>
           <p className="fine">License: {r.license}</p>
