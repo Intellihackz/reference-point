@@ -18,7 +18,7 @@ Any time you would go looking for a source, a reference, a citation, background 
 3. **Search.** Call `use_plugin` with the `search_references` tool. Use a few keywords from the request. Pass `max_price_usdc` if the user gave a budget. Searching is free.
 4. **Choose.** Pick the pieces that clearly match the request, judging by title, preview and tags. If two fit equally, take the cheaper one. Do not buy anything that is not clearly relevant.
 5. **Tell the user, then pay.** Say which piece you picked, who made it, and the price. Then call `use_plugin` with the `use_reference` tool. This proposes a USDC payment on Base, and PayBox creates a request. Follow "Paying through PayBox" below to get it approved and completed.
-6. **Read it.** Once the payment has succeeded, take the receipt id from the paid response and call `get_reference` with it. Use the content in your answer.
+6. **Read it.** As soon as the payment has succeeded, in the same turn, take the receipt id from the paid response and call `get_reference` with it. Do not stop to ask the user whether to continue. Use the content in your answer.
 7. **Cite it.** Add a citation that names the title, the creator and the receipt id. The `cite_reference` tool formats it. If the user asks whether a receipt is genuine, use `verify_receipt`.
 8. **Fall back honestly.** If nothing relevant is found, or the user declines to pay, use other sources and say that Reference Point had nothing suitable.
 
@@ -26,17 +26,19 @@ Any time you would go looking for a source, a reference, a citation, background 
 
 Every PayBox operation follows submit once, then poll. Never call `use_reference` a second time to check on a payment. That starts a new payment and charges the user again.
 
+**Keep going on your own.** Do not end your turn while a payment is pending, and never ask the user to tell you when they have approved. The user approves while you poll. As soon as the payment is proposed, write one short line such as "Approve the $0.02 payment in the PayBox window now", then immediately start calling `get_request` and keep calling it, one call after another, until the status is final. Allow up to about 30 checks. Only if it is still pending after that, stop and tell the user clearly what you are waiting for, and offer to reopen the signing window.
+
 1. **Submit once.** Keep the `request_id` from the result.
 2. **Hand over the approval link.** If the status is `pending_approval`, show the user the `approval_url` in your message, as a plain link on its own line, and tell them to open it in the PayBox app and approve with their passkey. Do not just say you are waiting. Approvals are tied to that exact payment and expire after about 10 minutes.
-3. **Poll.** Call `get_request` with the `request_id` until the status is final. Check again after the user says they approved. The statuses mean:
+3. **Poll.** Call `get_request` with the `request_id` repeatedly until the status is final. Do not wait to be asked. The statuses mean:
    - `pending_approval`: waiting for the user's passkey approval. Show the link again if they lost it.
-   - `pending_signature`: approved. The signing window is open in the chat and signs on its own. Ask the user to look for it, and keep polling.
+   - `pending_signature`: approved. The signing window is open in the chat and signs on its own. Tell the user once to approve it there, and keep polling. If it is still pending after about 10 checks, call `reopen_signing_window` once for the same request, then keep polling.
    - `pending_confirmation`: sent, waiting for the chain. Keep polling.
    - `success`: done. The paid response is in `output` and includes the receipt id.
    - `denied`: the user or a policy said no. Report the reason. Do not retry.
    - `error`: something failed. Report the message. Do not retry blindly.
 4. **If the approval expired,** say so and start one fresh request. That is safe because nothing was charged. Only do this once the old request is expired or in a final failed state.
-5. **If the user cannot see the signing window,** tell them to approve from the link or the PayBox app, then ask you to check `get_request` again.
+5. **If the user cannot see the signing window,** call `reopen_signing_window` once, tell them to approve from the link or the PayBox app, and keep polling `get_request`.
 6. **Wallet choice.** If the user has more than one wallet, ask which to pay from and pass it as `wallet_id`.
 7. **Failed payments.** If the response mentions an insufficient balance, tell the user the wallet needs USDC on Base. No gas token is needed for these payments.
 
