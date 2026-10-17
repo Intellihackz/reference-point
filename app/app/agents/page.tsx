@@ -1,4 +1,3 @@
-import { Footer, Nav } from "../components/Chrome";
 import CopyBlock from "../components/CopyBlock";
 
 export const metadata = {
@@ -19,76 +18,88 @@ const TOOLS = [
 
 export default function Page() {
   return (
-    <>
-      <Nav />
-      <main className="doc">
-        <h1 className="page-title">Use Reference Point with your agent</h1>
-        <p className="lede">
-          Your agent checks creators first whenever it needs a source. It pays a few cents in USDC through PayBox after you approve, then cites the
-          creator with a receipt.
-        </p>
-
-        <section>
-          <h2>Set it up</h2>
-          <ol className="doc-steps">
-            <li>
-              <h3>Connect PayBox to your agent</h3>
-              <p>
-                In claude.ai, open Settings, then Connectors, and add a custom connector with this address. Sign in with your passkey and grant the wallet you want to
-                pay from.
-              </p>
-              <CopyBlock text={MCP_URL} label="Copy the PayBox connector address" />
-            </li>
-            <li>
-              <h3>Turn on the Reference Point plugin</h3>
-              <p>In your PayBox account, open Plugins and switch on Reference Point. Start a new chat afterwards so the agent sees it.</p>
-            </li>
-            <li>
-              <h3>Add the skill</h3>
-              <p>
-                The skill tells your agent to check Reference Point before the web, to tell you the price first, and to cite the creator. In claude.ai, open Settings,
-                then Skills, and upload the file.
-              </p>
-              <div className="doc-actions">
-                <a className="go" href="/reference-point-skill.zip" download>
-                  Download the skill
-                </a>
-                <a className="go go-quiet" href="/SKILL.md">
-                  Read SKILL.md
-                </a>
-              </div>
-            </li>
-          </ol>
-        </section>
-
-        <section>
-          <h2>Then ask for a source</h2>
-          <p className="doc-p">You do not need to name the plugin. With the skill on, a normal request is enough.</p>
-          <CopyBlock text={PROMPT} label="Copy the example prompt" />
-          <p className="fine">The agent searches, tells you the piece and the price, and PayBox asks you to approve. Nothing is spent without that approval.</p>
-        </section>
-
-        <section>
-          <h2>What the agent can do</h2>
-          <ul className="doc-tools">
-            {TOOLS.map((t) => (
-              <li key={t.name}>
-                <code>{t.name}</code>
-                <span>{t.text}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section>
-          <h2>Creators</h2>
-          <p className="doc-p">Want to be found by agents? Publish an article or image, set your price per use, and add your wallet.</p>
-          <a className="go" href="/publish">
-            Publish your work
+    <div className="pub">
+      <aside className="pub-side">
+        <div className="pub-top">
+          <a className="brand" href="/">
+            Reference Point
           </a>
-        </section>
-      </main>
-      <Footer />
-    </>
+          <a className="nav-cta" href="/publish">
+            Publish
+          </a>
+        </div>
+
+        <div className="pub-intro">
+          <h1>Use it with your agent</h1>
+          <p>Your agent checks creators first whenever it needs a source, pays a few cents after you approve, and cites the creator with a receipt.</p>
+        </div>
+
+        <div className="glass pub-preview">
+          <span className="glass-label">Then just ask</span>
+          <CopyBlock text={PROMPT} label="Copy the example prompt" variant="glass" />
+          <span className="glass-meta">No plugin name needed. With the skill on, your agent looks here first.</span>
+        </div>
+      </aside>
+
+      <section className="pub-main">
+        <div className="pub-doc">
+          <div>
+            <h2>Set it up</h2>
+            <ol className="doc-steps">
+              <li>
+                <h3>Connect PayBox to your agent</h3>
+                <p>
+                  In claude.ai, open Settings, then Connectors, and add a custom connector with this address. Sign in with your passkey and grant the wallet you
+                  want to pay from.
+                </p>
+                <CopyBlock text={MCP_URL} label="Copy the PayBox connector address" />
+              </li>
+              <li>
+                <h3>Turn on the Reference Point plugin</h3>
+                <p>In your PayBox account, open Plugins and switch on Reference Point.</p>
+              </li>
+              <li>
+                <h3>Add the skill</h3>
+                <p>
+                  The skill tells your agent to check Reference Point before the web, to tell you the price first, and to cite the creator. In claude.ai, open Settings,
+                  then Skills, and upload the file.
+                </p>
+                <div className="doc-actions">
+                  <a className="go" href="/reference-point-skill.zip" download>
+                    Download the skill
+                  </a>
+                  <a className="go go-quiet" href="/SKILL.md">
+                    Read SKILL.md
+                  </a>
+                </div>
+              </li>
+            </ol>
+            <p className="callout">Start a new chat after you turn things on. Agents load plugins and skills when a chat begins.</p>
+          </div>
+
+          <div>
+            <h2>What the agent can do</h2>
+            <ul className="doc-tools">
+              {TOOLS.map((t) => (
+                <li key={t.name}>
+                  <code>{t.name}</code>
+                  <span>{t.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h2>Are you a creator?</h2>
+            <p className="doc-p">Publish an article or image, set your price per use, and add your wallet. Agents can then find you.</p>
+            <a className="go" href="/publish">
+              Publish your work
+            </a>
+          </div>
+
+          <p className="fine">Payments are USDC on Base, and every one is approved by you in PayBox.</p>
+        </div>
+      </section>
+    </div>
   );
 }

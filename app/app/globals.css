@@ -181,9 +181,9 @@ input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); 
 /* Agents page */
 .doc { max-width: 760px; margin: 0 auto; padding: 24px 24px 72px; }
 .doc section { margin-top: 56px; }
-.doc h2 { font-size: clamp(26px, 3.4vw, 34px); font-weight: 500; letter-spacing: -0.03em; margin: 0 0 18px; }
-.doc h3 { font-size: 19px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 6px; }
-.doc p { margin: 0 0 14px; }
+.doc h2, .pub-doc h2 { font-size: clamp(26px, 3.4vw, 34px); font-weight: 500; letter-spacing: -0.03em; margin: 0 0 18px; }
+.doc h3, .pub-doc h3 { font-size: 19px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 6px; }
+.doc p, .pub-doc p { margin: 0 0 14px; }
 .doc-p { color: var(--muted); font-size: 17px; max-width: 56ch; }
 .doc-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: step; }
 .doc-steps li { counter-increment: step; position: relative; padding: 0 0 32px 56px; border-left: 1px solid var(--line); margin-left: 16px; }
@@ -212,3 +212,16 @@ input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); 
 
 .brand, .nav-link, .nav-cta { white-space: nowrap; }
 @media (max-width: 420px) { .nav-link { display: none; } }
+
+/* Agents page on the photo split layout */
+.pub-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pub-top .brand { font-size: 22px; }
+.pub-top .nav-cta { background: rgb(255 255 255 / 0.1); border-color: rgb(255 255 255 / 0.35); color: #fff; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.pub-top .nav-cta:hover { background: rgb(255 255 255 / 0.2); border-color: #fff; }
+.pub-doc { width: 100%; max-width: 600px; display: grid; gap: 56px; align-content: start; }
+.callout { margin: 28px 0 0 !important; padding: 14px 16px; border-radius: var(--r-input); background: var(--surface); border: 1px solid var(--line); color: var(--ink) !important; font-size: 15px; }
+.glass-code { margin: 4px 0 8px; }
+.glass-code pre { background: rgb(6 11 24 / 0.35); border: 1px solid rgb(255 255 255 / 0.28); color: #fff; padding: 14px 76px 14px 16px; border-radius: 12px; }
+.glass-code code { font-family: var(--font-geist), system-ui, sans-serif; font-size: 17px; line-height: 1.45; }
+.glass-code button { background: rgb(255 255 255 / 0.16); border-color: rgb(255 255 255 / 0.4); color: #fff; }
+.glass-code button:hover { background: rgb(255 255 255 / 0.28); border-color: #fff; }
