@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 async function resize(file: File, max: number, quality: number): Promise<string> {
   const bmp = await createImageBitmap(file);
@@ -12,7 +12,10 @@ async function resize(file: File, max: number, quality: number): Promise<string>
   return c.toDataURL("image/jpeg", quality);
 }
 
-export default function PublishForm() {
+const PRICES = ["0.02", "0.05", "0.10", "0.25"];
+const WALLET_OK = /^0x[0-9a-fA-F]{40}$/;
+
+export default function PublishApp() {
   const [kind, setKind] = useState<"text" | "image">("text");
   const [title, setTitle] = useState("");
   const [preview, setPreview] = useState("");
@@ -22,10 +25,12 @@ export default function PublishForm() {
   const [tags, setTags] = useState("");
   const [creator, setCreator] = useState("");
   const [wallet, setWallet] = useState("");
+  const [walletTouched, setWalletTouched] = useState(false);
   const [price, setPrice] = useState("0.05");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [link, setLink] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     try {
@@ -54,6 +59,11 @@ export default function PublishForm() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (kind === "image" && !image) return setError("Choose an image first.");
+    if (!WALLET_OK.test(wallet.trim())) {
+      setWalletTouched(true);
+      return setError("Enter a valid Base wallet address (0x followed by 40 characters).");
+    }
     setBusy(true);
     setError(null);
     try {
@@ -87,86 +97,178 @@ export default function PublishForm() {
     }
   }
 
-  if (link) {
-    return (
-      <div className="card done">
-        <h1>Published</h1>
-        <p>
-          Agents can now find it and pay you <strong>${Number(price).toFixed(2)} USDC</strong> per use.
-        </p>
-        <p>
-          <a href={link}>{link}</a>
-        </p>
-        <a className="go linkbtn" href="/publish">
-          Publish another
-        </a>
-      </div>
-    );
-  }
+  const priceNum = Number(price);
+  const priceLabel = Number.isFinite(priceNum) && priceNum > 0 ? priceNum.toFixed(2) : "0.00";
+  const walletBad = walletTouched && wallet.trim() !== "" && !WALLET_OK.test(wallet.trim());
 
   return (
-    <form className="card" onSubmit={submit}>
-      <div className="seg" role="tablist">
-        <button type="button" className={kind === "text" ? "on" : ""} onClick={() => setKind("text")}>
-          Article or text
-        </button>
-        <button type="button" className={kind === "image" ? "on" : ""} onClick={() => setKind("image")}>
-          Image
-        </button>
-      </div>
+    <div className="pub">
+      <aside className="pub-side">
+        <a className="brand" href="/">
+          Reference Point
+        </a>
 
-      <label>
-        Title
-        <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} required />
-      </label>
-      <label>
-        Public preview (shown to agents for free, 10-300 chars)
-        <textarea value={preview} onChange={(e) => setPreview(e.target.value)} maxLength={300} rows={2} required />
-      </label>
+        <div className="pub-intro">
+          <h1>Publish your work</h1>
+          <p>Set a price once. Every time an agent pays to use it as a reference, the USDC goes straight to your wallet.</p>
+        </div>
 
-      {kind === "text" ? (
-        <label>
-          Full text (revealed after payment)
-          <textarea value={text} onChange={(e) => setText(e.target.value)} maxLength={12000} rows={9} required />
-        </label>
-      ) : (
-        <label>
-          Image file (revealed after payment)
-          <input type="file" accept="image/*" onChange={onFile} required={!image} />
-          {image && (
+        <div className="glass pub-preview" aria-live="polite">
+          <span className="glass-label">How agents see it</span>
+          {kind === "image" && thumb && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img className="preview" src={thumb ?? image} alt="Selected" />
+            <img className="pub-thumb" src={thumb} alt="" />
           )}
-        </label>
-      )}
+          <strong>{title.trim() || "Your title appears here"}</strong>
+          <span className="pub-preview-text">{preview.trim() || "A short public preview. The full piece unlocks after payment."}</span>
+          <span className="glass-meta">
+            {kind === "text" ? "Article" : "Image"}, ${priceLabel} per use{creator.trim() ? `, by ${creator.trim()}` : ""}
+          </span>
+        </div>
+      </aside>
 
-      <label>
-        Tags (comma separated)
-        <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="tokyo, street, rain" />
-      </label>
-      <div className="row">
-        <label>
-          Your name
-          <input value={creator} onChange={(e) => setCreator(e.target.value)} maxLength={60} required />
-        </label>
-        <label>
-          Price per use (USDC)
-          <input value={price} onChange={(e) => setPrice(e.target.value)} inputMode="decimal" required />
-        </label>
-      </div>
-      <label>
-        Base wallet address (you get paid here)
-        <input value={wallet} onChange={(e) => setWallet(e.target.value)} placeholder="0x..." spellCheck={false} autoComplete="off" required />
-      </label>
+      <section className="pub-main">
+        {link ? (
+          <div className="pub-done">
+            <h2>Published</h2>
+            <p>
+              Agents can now find it and pay you <strong>${priceLabel} USDC</strong> per use.
+            </p>
+            <a className="pub-link" href={link}>
+              {link}
+            </a>
+            <div className="pub-actions">
+              <a className="go" href={link}>
+                View your page
+              </a>
+              <a className="go go-quiet" href="/publish">
+                Publish another
+              </a>
+            </div>
+          </div>
+        ) : (
+          <form className="pub-form" onSubmit={submit}>
+            <fieldset>
+              <legend>About the work</legend>
 
-      {error && <p className="error">{error}</p>}
-      <button className="go" disabled={busy}>
-        {busy ? "Publishing..." : "Publish"}
-      </button>
-      <p className="fine">
-        Only publish work you own or have the right to license. Default terms: agents may use it as a reference with attribution, with no resale of the
-        original.
-      </p>
-    </form>
+              <div className="seg" role="tablist" aria-label="Type of work">
+                <button type="button" className={kind === "text" ? "on" : ""} onClick={() => setKind("text")}>
+                  Article or text
+                </button>
+                <button type="button" className={kind === "image" ? "on" : ""} onClick={() => setKind("image")}>
+                  Image
+                </button>
+              </div>
+
+              <label>
+                Title
+                <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} required />
+              </label>
+
+              <label>
+                <span className="label-row">
+                  Public preview
+                  <span className="count">{preview.length}/300</span>
+                </span>
+                <textarea value={preview} onChange={(e) => setPreview(e.target.value)} maxLength={300} rows={2} required />
+                <span className="hint">Shown to agents for free, so they can decide whether to pay.</span>
+              </label>
+
+              {kind === "text" ? (
+                <label>
+                  <span className="label-row">
+                    Full text
+                    <span className="count">{text.length}/12000</span>
+                  </span>
+                  <textarea value={text} onChange={(e) => setText(e.target.value)} maxLength={12000} rows={10} required />
+                  <span className="hint">Revealed only after an agent pays.</span>
+                </label>
+              ) : (
+                <div className="field">
+                  <span className="field-label">Image file</span>
+                  <input ref={fileRef} type="file" accept="image/*" onChange={onFile} hidden />
+                  <button type="button" className={`drop${image ? " has" : ""}`} onClick={() => fileRef.current?.click()}>
+                    {image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={thumb ?? image} alt="Selected" />
+                    ) : (
+                      <span>Choose an image</span>
+                    )}
+                    <span className="drop-note">{image ? "Click to replace" : "JPEG, PNG or WebP"}</span>
+                  </button>
+                  <span className="hint">The full image is revealed only after an agent pays. Agents see a small thumbnail for free.</span>
+                </div>
+              )}
+
+              <label>
+                Tags
+                <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="tokyo, street, rain" />
+                <span className="hint">Comma separated. Helps agents find it.</span>
+              </label>
+            </fieldset>
+
+            <fieldset>
+              <legend>Price and payout</legend>
+
+              <div className="field">
+                <span className="field-label">Price per use (USDC)</span>
+                <div className="chips" role="group" aria-label="Quick prices">
+                  {PRICES.map((p) => (
+                    <button key={p} type="button" className={price === p ? "on" : ""} onClick={() => setPrice(p)}>
+                      ${p}
+                    </button>
+                  ))}
+                  <input
+                    aria-label="Custom price in USDC"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    inputMode="decimal"
+                    className="chip-input"
+                    required
+                  />
+                </div>
+                <span className="hint">Between $0.01 and $25. Cheaper prices get chosen more often.</span>
+              </div>
+
+              <label>
+                Your name
+                <input value={creator} onChange={(e) => setCreator(e.target.value)} maxLength={60} required />
+                <span className="hint">Shown as the creator and on every receipt.</span>
+              </label>
+
+              <label>
+                Base wallet address
+                <input
+                  value={wallet}
+                  onChange={(e) => setWallet(e.target.value)}
+                  onBlur={() => setWalletTouched(true)}
+                  placeholder="0x..."
+                  spellCheck={false}
+                  autoComplete="off"
+                  aria-invalid={walletBad}
+                  required
+                />
+                <span className={`hint${walletBad ? " bad" : ""}`}>
+                  {walletBad ? "That is not a valid address. It should start with 0x and have 40 more characters." : "USDC on Base is sent here. Double check it, payments cannot be reversed."}
+                </span>
+              </label>
+            </fieldset>
+
+            {error && (
+              <p className="error" role="alert">
+                {error}
+              </p>
+            )}
+            <button className="go go-block" disabled={busy}>
+              {busy ? "Publishing..." : "Publish"}
+            </button>
+            <p className="fine">
+              Only publish work you own or have the right to license. Default terms: agents may use it as a reference with attribution, with no resale of the
+              original.
+            </p>
+          </form>
+        )}
+      </section>
+    </div>
   );
 }
