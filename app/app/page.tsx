@@ -16,9 +16,14 @@ export default async function Home() {
             uses your work.
           </h1>
           <p className="hero-sub">Agents pay a few cents in USDC to cite your articles and images. The money goes straight to your wallet.</p>
-          <a className="cta" href="/publish">
-            Publish your work
-          </a>
+          <div className="cta-row">
+            <a className="cta" href="/publish">
+              Publish your work
+            </a>
+            <a className="cta cta-quiet" href="/agents">
+              Use it with your agent
+            </a>
+          </div>
         </div>
 
         {latest && (

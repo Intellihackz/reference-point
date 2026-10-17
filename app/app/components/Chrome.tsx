@@ -4,9 +4,14 @@ export function Nav({ onDark = false }: { onDark?: boolean }) {
       <a className="brand" href="/">
         Reference Point
       </a>
-      <a className="nav-cta" href="/publish">
-        Publish
-      </a>
+      <nav className="nav-links" aria-label="Main">
+        <a className="nav-link" href="/agents">
+          For agents
+        </a>
+        <a className="nav-cta" href="/publish">
+          Publish
+        </a>
+      </nav>
     </header>
   );
 }
