@@ -15,9 +15,9 @@ Environment variables (Vercel):
 | `ADMIN_KEY` | Optional. Allows `DELETE /api/refs/:id` with header `x-admin-key` |
 | `FACILITATOR_URL` | Optional. Defaults to `https://facilitator.payai.network` |
 
-Seed sample content: `node app/scripts/seed.mjs https://YOUR-APP.vercel.app 0xYourBaseWallet "Your Name"`
+Seed sample content: `node app/scripts/seed.mjs https://point-reference.vercel.app 0xYourBaseWallet "Your Name"`
 
 ## Plugin settings (PayBox portal)
 
 - Network host: your Vercel hostname
-- Environment variable `REFERENCE_API` = `https://YOUR-APP.vercel.app`
+- Environment variable `REFERENCE_API` = `https://point-reference.vercel.app`

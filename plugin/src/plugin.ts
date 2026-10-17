@@ -4,7 +4,7 @@ import * as z from "zod/v4";
 import { proposeX402, x402OutputSchema } from "./paybox.js";
 
 const PROTOCOL_VERSION = "2026-07-28";
-const API = (process.env.REFERENCE_API ?? "https://reference-point.vercel.app").replace(/\/$/, "");
+const API = (process.env.REFERENCE_API ?? "https://point-reference.vercel.app").replace(/\/$/, "");
 
 const refId = z.string().regex(/^[A-Za-z0-9_-]{8,40}$/).describe("Reference id from search_references");
 const receiptId = z.string().regex(/^[A-Za-z0-9_-]{8,40}$/).describe("Receipt id from the paid use_reference response");
