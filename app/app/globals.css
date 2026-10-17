@@ -223,3 +223,8 @@ input:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); 
       url("/hero.webp") 62% 70% / cover no-repeat;
   }
 }
+
+/* Single-screen landing: the hero fills the viewport. */
+.hero-wrap { min-height: 100dvh; display: flex; flex-direction: column; border-radius: 0; border-bottom: 0; }
+.hero-wrap .hero { flex: 1; width: 100%; padding-top: 24px; padding-bottom: 64px; }
+.hero-wrap .nav { width: 100%; }

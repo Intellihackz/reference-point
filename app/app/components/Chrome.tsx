@@ -6,8 +6,6 @@ export function Nav({ onDark = false }: { onDark?: boolean }) {
         Reference Point
       </a>
       <nav className="nav-links" aria-label="Main">
-        <a href="/#library">Library</a>
-        <a href="/#receipts">Receipts</a>
         <a className="btn btn-sm" href="/publish">
           <span className="long-label">Publish your work</span>
           <span className="short-label">Publish</span>
