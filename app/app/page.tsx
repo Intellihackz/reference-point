@@ -17,8 +17,9 @@ export default async function Home() {
 
   return (
     <>
-      <Nav />
       <main>
+        <div className="hero-wrap">
+        <Nav onDark />
         <section className="hero">
           <div className="hero-copy">
             <h1>
@@ -46,6 +47,7 @@ export default async function Home() {
             )}
           </div>
         </section>
+        </div>
 
         <section className="how" id="how">
           <h2>From upload to payout in minutes</h2>

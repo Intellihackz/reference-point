@@ -1,6 +1,6 @@
-export function Nav() {
+export function Nav({ onDark = false }: { onDark?: boolean }) {
   return (
-    <header className="nav">
+    <header className={`nav${onDark ? " nav-dark" : ""}`}>
       <a className="brand" href="/">
         <span className="brand-mark" aria-hidden="true" />
         Reference Point
