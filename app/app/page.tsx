@@ -15,7 +15,7 @@ export default async function Home() {
             Get paid when AI <br className="br-lg" />
             uses your work.
           </h1>
-          <p className="hero-sub">Agents pay a few cents in USDC to cite your articles and images. The money goes straight to your wallet.</p>
+          <p className="hero-sub">Agents pay a few cents in USDC to use your work as a reference. The money goes straight to your wallet.</p>
           <div className="cta-row">
             <a className="cta" href="/publish">
               Publish your work
